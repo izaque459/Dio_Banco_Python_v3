@@ -3,18 +3,18 @@ from abc import ABC, abstractclassmethod, abstractproperty
 from datetime import datetime
 
 class Conta:
-    __saldo = None
-    __numero = None
-    __agencia = None
-    __cliente = None
-    __historico = None
+    _saldo = None
+    _numero = None
+    _agencia = None
+    _cliente = None
+    _historico = None
     
     def __init__():
-        self.__saldo = 0.0
-        self.__numero = 0
-        self.__agencia = "000000"
-        self.__cliente = Cliente
-        self.__historico = Historico
+        self._saldo = 0.0
+        self._numero = 0
+        self._agencia = "000000"
+        self._cliente = Cliente
+        self._historico = Historico
         
     
 class ContaCorrente(Conta):
@@ -47,12 +47,12 @@ class Historico:
         return None
 
 class Cliente:
-    __endereco = None
-    __contas = None
+    _endereco = None
+    _contas = None
     
     def __init__():
-        self.__endereco = "000000"
-        self.__contas = []
+        self._endereco = "000000"
+        self._contas = []
 
 
 class PessoaFisica(Cliente):
