@@ -168,9 +168,12 @@ class Main:
         
         
     def __listar_contas(self):
-        for conta in self.__contas:
-            print("=" * 100)
-            print(textwrap.dedent(str(conta)))
+        if self.__contas:
+            for conta in self.__contas:
+                print("=" * 100)
+                print(textwrap.dedent(str(conta)))
+        else:
+            print("Não há contas criadas\n")
 
     def __filtrar_cliente(self,cpf):
         clientes_filtrados = [cliente for cliente in self.__clientes if cliente.cpf == cpf]
@@ -185,7 +188,18 @@ class Main:
             print("\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@")
             return None
         
-        conta = ContaCorrente(cliente,numero)
+        menu_criar_contas = """ Escolha o tipo de conta a seguir : \n[c]\tConta Corrente\n[p]\tConta Poupança\n"""
+        opcao_criar_conta = input(textwrap.dedent(menu_criar_contas))
+        if opcao_criar_conta == "c":
+            conta = ContaCorrente(cliente,numero)
+            
+        elif opcao_criar_conta == "p":
+            conta = ContaPoupança(cliente,numero)
+            
+        else:
+            print("Opcao invalida para conta.")
+            
+         
         self.__contas.append(conta)
         cliente.adicionar(conta)
         
