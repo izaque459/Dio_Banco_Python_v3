@@ -153,6 +153,9 @@ class PessoaFisica(Cliente):
         self._contas.append(conta)
         return None
 
+    def recuperar_contas(self):
+        return self._contas
+    
 class PessoaJuridica(Cliente):
     __cnpj = None
     __nome = None
@@ -175,10 +178,36 @@ class Main:
         else:
             print("Não há contas criadas\n")
 
+    
     def __filtrar_cliente(self,cpf):
         clientes_filtrados = [cliente for cliente in self.__clientes if cliente.cpf == cpf]
         return clientes_filtrados[0] if clientes_filtrados else None
     
+    def __depositar(self):
+        cpf = input("Informe o cpf do cliente: ")
+        cliente = self.__filtrar_cliente(cpf)
+        
+        if not cliente:
+            print("\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@")
+            return None
+        
+        contas = cliente.recuperar_contas()
+        
+        if not contas:
+            print("\n@@@ O cliente não possui contas! @@@")
+            return None
+            
+        escolhas = 1
+        escolha = -1
+        for conta in contas:
+            print(f'\nPara conta\n{conta}\nEscolha {escolhas}')
+            escolhas +=1
+        
+        while (int(escolha) < 0) or ( int(escolha)> len(contas) ):
+            escolha = input("\nEscolha a conta: ")
+   ===============================================================     
+        
+        print("\n=== Deposito concluido com sucesso! ===")
 
     def __criar_contas(self,numero):
         cpf = input("Informe o CPF do cliente: ")
@@ -249,7 +278,9 @@ class Main:
         while True:
             opcao = input(textwrap.dedent(menu))
             
-            if opcao == "nc":
+            if opcao == "d":
+                self.__depositar()
+            elif opcao == "nc":
                 numero_conta = len(self.__contas)+1
                 self.__criar_contas(numero_conta)
                 
