@@ -288,12 +288,19 @@ class Main:
         else:
             print("Não há contas criadas\n")
 
-    def __filtrar_cliente(self, cpf):
+    def __filtrar_cpf_cliente(self, cpf):
         clientes_filtrados = [
-            cliente for cliente in self.__clientes if cliente.cpf == cpf
+            cliente for cliente in self.__clientes if isinstance(cliente, PessoaFisica) and cliente.cpf == cpf
         ]
         return clientes_filtrados[0] if clientes_filtrados else None
 
+
+    def __filtrar_cnpj_cliente(self, cnpj):
+        clientes_filtrados = [
+            cliente for cliente in self.__clientes if isinstance(cliente, PessoaJuridica) and cliente.cnpj == cnpj
+        ]
+        return clientes_filtrados[0] if clientes_filtrados else None
+        
     def __sacar(self):
         cpf = input("Informe o cpf do cliente: ")
         cliente = self.__filtrar_cliente(cpf)
@@ -359,9 +366,74 @@ class Main:
         cliente.realizar_transacao(conta, transacao)
 
         
+    def __criar_conta_poupanca(self,numero):
+    
+        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
+        opcao_escolha = int(input(textwrap.dedent(menu_escolha_CPF_CNPJ)))
+        
+        while (opcao_escolha!= 1) and (opcao_escolha != 2):
+            print("Digite a opcao correta\n")
+            opcao_escolha = int(input(textwrap.dedent(menu_criar_contas)))
+            
+        if opcao_escolha == 1:
+            cpf = input("Informe o CPF: ")
+            cliente = self.__filtrar_cpf_cliente(cpf)
+        else:
+            cnpj= input("Informe o CNPJ: ")
+            cliente = self.__filtrar_cnpj_cliente(cnpj)
+            
+        if not cliente:
+            print(
+                "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
+            )
+            return None
+        conta = ContaPoupança(cliente, numero)
+        
+        self.__contas.append(conta)
+        cliente.adicionar(conta)
+       
+        print("\n=== Conta poupança criada cm sucesso! ===")
+        
+    def __criar_conta_corrente(self,numero):
+    
+        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
+        opcao_escolha = int(input(textwrap.dedent(menu_escolha_CPF_CNPJ)))
+        
+        while (opcao_escolha!= 1) and (opcao_escolha != 2):
+            print("Digite a opcao correta\n")
+            opcao_escolha = int(input(textwrap.dedent(menu_criar_contas)))
+            
+        if opcao_escolha == 1:
+            cpf = input("Informe o CPF: ")
+            cliente = self.__filtrar_cpf_cliente(cpf)
+        else:
+            cnpj= input("Informe o CNPJ: ")
+            cliente = self.__filtrar_cnpj_cliente(cnpj)
+            
+        if not cliente:
+            print(
+                "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
+            )
+            return None
+        conta = ContaCorrente(cliente, numero)
+        
+        self.__contas.append(conta)
+        cliente.adicionar(conta)
+       
+        print("\n=== Conta corrente criada cm sucesso! ===")
+
     def __criar_contas(self, numero):
-        cpf = input("Informe o CPF ou CNPJ do cliente: ")
-        cliente = self.__filtrar_cliente(cpf)
+        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
+        opcao_escolha = int(input(textwrap.dedent(menu_escolha_CPF_CNPJ)))
+        
+        while (opcao_escolha!= 1) and (opcao_escolha != 2):
+            print("Digite a opcao correta\n")
+            opcao_escolha = int(input(textwrap.dedent(menu_criar_contas)))
+            
+        if opcao_escolha == 1:
+            cliente = self.__filtrar_cpf_cliente(cpf)
+        else:
+            cliente = self.__filtrar_cnpj_cliente(cnpj)
 
         if not cliente:
             print(
@@ -391,7 +463,7 @@ class Main:
         if opcao_criar_cliente == "f":
             print("Criar cliente fisico")
             cpf = input("Informe o CPF (somente número): ")
-            cliente = self.__filtrar_cliente(cpf)
+            cliente = self.__filtrar_cpf_cliente(cpf)
 
             if cliente:
                 print("\n@@@ Já existe usuário com esse CPF! @@@")
@@ -412,7 +484,7 @@ class Main:
         elif opcao_criar_cliente == "j":
             print("Criar cliente juridico")
             cnpj = input("Informe o CNPJ (somente número): ")
-            cliente = self.__filtrar_cliente(cnpj)
+            cliente = self.__filtrar_cnpj_cliente(cnpj)
 
             if cliente:
                 print("\n@@@ Já existe usuário com esse CNPJ! @@@")
@@ -439,7 +511,8 @@ class Main:
         [s]\tSacar
         [t]\tTransferir
         [e]\tExtrato
-        [nc]\tNova conta
+        [cc]\tConta Corrente
+        [cp]\tConta Poupança
         [lc]\tListar contas
         [nu]\tNovo usuário
         [q]\tSair
@@ -452,10 +525,14 @@ class Main:
                 self.__sacar()
             elif opcao == "d":
                 self.__depositar()
-            elif opcao == "nc":
+            elif opcao == "cp":
                 numero_conta = len(self.__contas) + 1
-                self.__criar_contas(numero_conta)
-
+                self.__criar_conta_poupanca(numero_conta)
+                
+            elif opcao == "cc":
+                numero_conta = len(self.__contas) + 1
+                self.__criar_conta_corrente(numero_conta)
+                
             elif opcao == "lc":
                 self.__listar_contas()
 
