@@ -294,6 +294,38 @@ class Main:
         ]
         return clientes_filtrados[0] if clientes_filtrados else None
 
+    def __sacar(self):
+        cpf = input("Informe o cpf do cliente: ")
+        cliente = self.__filtrar_cliente(cpf)
+
+        if not cliente:
+            print(
+                "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
+            )
+            return None
+
+        contas = cliente.recuperar_contas()
+
+        if not contas:
+            print("\n@@@ O cliente não possui contas! @@@")
+            return None
+
+        escolhas = 0
+        escolha = -1
+        for conta in contas:
+            print(f"\nPara conta\n{conta}\nEscolha {escolhas}")
+            escolhas += 1
+
+        while (int(escolha) < 0) or (int(escolha) > len(contas)):
+            escolha = input("\nEscolha a conta: ")
+      
+        
+        conta = contas[int(escolha)]
+
+        valor = float(input("\nInforme o valor do saque: "))
+        transacao = Saque(valor)
+        cliente.realizar_transacao(conta, transacao)
+
     def __depositar(self):
         cpf = input("Informe o cpf do cliente: ")
         cliente = self.__filtrar_cliente(cpf)
@@ -326,8 +358,7 @@ class Main:
         transacao = Deposito(valor)
         cliente.realizar_transacao(conta, transacao)
 
-        print("\n=== Deposito concluido com sucesso! ===")
-
+        
     def __criar_contas(self, numero):
         cpf = input("Informe o CPF do cliente: ")
         cliente = self.__filtrar_cliente(cpf)
@@ -398,8 +429,10 @@ class Main:
 
         while True:
             opcao = input(textwrap.dedent(menu))
-
-            if opcao == "d":
+            
+            if opcao == "s":
+                self.__sacar()
+            elif opcao == "d":
                 self.__depositar()
             elif opcao == "nc":
                 numero_conta = len(self.__contas) + 1
