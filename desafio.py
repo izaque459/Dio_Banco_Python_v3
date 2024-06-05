@@ -360,7 +360,7 @@ class Main:
 
         
     def __criar_contas(self, numero):
-        cpf = input("Informe o CPF do cliente: ")
+        cpf = input("Informe o CPF ou CNPJ do cliente: ")
         cliente = self.__filtrar_cliente(cpf)
 
         if not cliente:
@@ -369,7 +369,7 @@ class Main:
             )
             return None
 
-        menu_criar_contas = """ Escolha o tipo de conta a seguir : \n[c]\tConta Corrente\n[p]\tConta Poupança\n"""
+        menu_criar_contas = """ Escolha o tipo de conta a seguir : \n[c]\tConta Corrente\n[p]\tConta Poupança\n=> """
         opcao_criar_conta = input(textwrap.dedent(menu_criar_contas))
         if opcao_criar_conta == "c":
             conta = ContaCorrente(cliente, numero)
@@ -386,7 +386,7 @@ class Main:
         print("\n=== Conta criada cm sucesso! ===")
 
     def __criar_cliente(self):
-        menu_criar_cliente = """Escolha o cliente a seguir: \n[f]\tCliente Fisico\n[j]\tCliente Juridico\n"""
+        menu_criar_cliente = """Escolha o cliente a seguir: \n[f]\tCliente Fisico\n[j]\tCliente Juridico\n=> """
         opcao_criar_cliente = input(textwrap.dedent(menu_criar_cliente))
         if opcao_criar_cliente == "f":
             print("Criar cliente fisico")
@@ -411,20 +411,20 @@ class Main:
 
         elif opcao_criar_cliente == "j":
             print("Criar cliente juridico")
-            cpf = input("Informe o CPF (somente número): ")
-            cliente = self.__filtrar_cliente(cpf)
+            cnpj = input("Informe o CNPJ (somente número): ")
+            cliente = self.__filtrar_cliente(cnpj)
 
             if cliente:
-                print("\n@@@ Já existe usuário com esse CPF! @@@")
+                print("\n@@@ Já existe usuário com esse CNPJ! @@@")
                 return
 
             nome = input("Informe o nome completo: ")
-            data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ")
+            data_criacao = input("Informe a data de nascimento (dd-mm-aaaa): ")
             endereco = input(
                 "Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): "
             )
 
-            cliente = PessoaJuridica(nome, cpf, data_nascimento, endereco)
+            cliente = PessoaJuridica(nome, cnpj, data_criacao, endereco)
 
             self.__clientes.append(cliente)
 
