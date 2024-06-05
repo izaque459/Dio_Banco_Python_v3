@@ -422,41 +422,6 @@ class Main:
        
         print("\n=== Conta corrente criada cm sucesso! ===")
 
-    def __criar_contas(self, numero):
-        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
-        opcao_escolha = int(input(textwrap.dedent(menu_escolha_CPF_CNPJ)))
-        
-        while (opcao_escolha!= 1) and (opcao_escolha != 2):
-            print("Digite a opcao correta\n")
-            opcao_escolha = int(input(textwrap.dedent(menu_criar_contas)))
-            
-        if opcao_escolha == 1:
-            cliente = self.__filtrar_cpf_cliente(cpf)
-        else:
-            cliente = self.__filtrar_cnpj_cliente(cnpj)
-
-        if not cliente:
-            print(
-                "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
-            )
-            return None
-
-        menu_criar_contas = """ Escolha o tipo de conta a seguir : \n[c]\tConta Corrente\n[p]\tConta Poupança\n=> """
-        opcao_criar_conta = input(textwrap.dedent(menu_criar_contas))
-        if opcao_criar_conta == "c":
-            conta = ContaCorrente(cliente, numero)
-
-        elif opcao_criar_conta == "p":
-            conta = ContaPoupança(cliente, numero)
-
-        else:
-            print("Opcao invalida para conta.")
-
-        self.__contas.append(conta)
-        cliente.adicionar(conta)
-
-        print("\n=== Conta criada cm sucesso! ===")
-
     def __criar_cliente(self):
         menu_criar_cliente = """Escolha o cliente a seguir: \n[f]\tCliente Fisico\n[j]\tCliente Juridico\n=> """
         opcao_criar_cliente = input(textwrap.dedent(menu_criar_cliente))
