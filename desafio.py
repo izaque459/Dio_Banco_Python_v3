@@ -411,6 +411,24 @@ class Main:
 
         elif opcao_criar_cliente == "j":
             print("Criar cliente juridico")
+            cpf = input("Informe o CPF (somente número): ")
+            cliente = self.__filtrar_cliente(cpf)
+
+            if cliente:
+                print("\n@@@ Já existe usuário com esse CPF! @@@")
+                return
+
+            nome = input("Informe o nome completo: ")
+            data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ")
+            endereco = input(
+                "Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): "
+            )
+
+            cliente = PessoaJuridica(nome, cpf, data_nascimento, endereco)
+
+            self.__clientes.append(cliente)
+
+            print("=== Cliente criado com sucesso! ===")
         else:
             print("Escolha invalida para cliente")
 
