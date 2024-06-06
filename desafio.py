@@ -301,9 +301,26 @@ class Main:
         ]
         return clientes_filtrados[0] if clientes_filtrados else None
         
+    def __escolha_CPF_CNPJ(self):
+        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
+        opcao_escolha = input(textwrap.dedent(menu_escolha_CPF_CNPJ))
+        
+        while (opcao_escolha!= '1') and (opcao_escolha != '2'):
+            print("Digite a opcao correta\n")
+            opcao_escolha = input(textwrap.dedent(menu_escolha_CPF_CNPJ))
+            
+        if opcao_escolha == '1':
+            cpf = input("Informe o CPF: ")
+            cliente = self.__filtrar_cpf_cliente(cpf)
+        else:
+            cnpj= input("Informe o CNPJ: ")
+            cliente = self.__filtrar_cnpj_cliente(cnpj)
+            
+        return cliente
+    
     def __sacar(self):
-        cpf = input("Informe o cpf do cliente: ")
-        cliente = self.__filtrar_cliente(cpf)
+        
+        cliente = self.__escolha_CPF_CNPJ()
 
         if not cliente:
             print(
@@ -334,8 +351,8 @@ class Main:
         cliente.realizar_transacao(conta, transacao)
 
     def __depositar(self):
-        cpf = input("Informe o cpf do cliente: ")
-        cliente = self.__filtrar_cliente(cpf)
+        
+        cliente = self.__escolha_CPF_CNPJ()
 
         if not cliente:
             print(
@@ -368,25 +385,14 @@ class Main:
         
     def __criar_conta_poupanca(self,numero):
     
-        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
-        opcao_escolha = int(input(textwrap.dedent(menu_escolha_CPF_CNPJ)))
+        cliente = self.__escolha_CPF_CNPJ()
         
-        while (opcao_escolha!= 1) and (opcao_escolha != 2):
-            print("Digite a opcao correta\n")
-            opcao_escolha = int(input(textwrap.dedent(menu_criar_contas)))
-            
-        if opcao_escolha == 1:
-            cpf = input("Informe o CPF: ")
-            cliente = self.__filtrar_cpf_cliente(cpf)
-        else:
-            cnpj= input("Informe o CNPJ: ")
-            cliente = self.__filtrar_cnpj_cliente(cnpj)
-            
         if not cliente:
             print(
                 "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
             )
             return None
+            
         conta = ContaPoupança(cliente, numero)
         
         self.__contas.append(conta)
@@ -396,19 +402,7 @@ class Main:
         
     def __criar_conta_corrente(self,numero):
     
-        menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
-        opcao_escolha = int(input(textwrap.dedent(menu_escolha_CPF_CNPJ)))
-        
-        while (opcao_escolha!= 1) and (opcao_escolha != 2):
-            print("Digite a opcao correta\n")
-            opcao_escolha = int(input(textwrap.dedent(menu_criar_contas)))
-            
-        if opcao_escolha == 1:
-            cpf = input("Informe o CPF: ")
-            cliente = self.__filtrar_cpf_cliente(cpf)
-        else:
-            cnpj= input("Informe o CNPJ: ")
-            cliente = self.__filtrar_cnpj_cliente(cnpj)
+        cliente = self.__escolha_CPF_CNPJ()
             
         if not cliente:
             print(
