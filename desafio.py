@@ -183,14 +183,15 @@ class Transferencia(Transacao):
     
     def __init__(self, valor, conta_destino):
         self.__valor = valor
-        self._conta_destino = conta_destino
+        self.__conta_destino = conta_destino
 
     @property
     def valor(self):
         return self.__valor
 
     def registra(self, conta):
-        if conta.sacar(self.valor):
+    
+         if conta.sacar(self.valor):
             self.__conta_destino.depositar(self.valor)
             conta.historico.adicionar_transacao(self)
             self.__conta_destino.historico.adicionar_transacao(self)
@@ -317,6 +318,71 @@ class Main:
             cliente = self.__filtrar_cnpj_cliente(cnpj)
             
         return cliente
+        
+    
+    def __transferir(self):
+        
+        print("\nEscolha o CPF ou CNPJ da conta de origem.\n")
+        cliente_origem = self.__escolha_CPF_CNPJ()
+        
+        if not cliente_origem:
+            print(
+                "\n@@@ Cliente não encontrado, fluxo de transferencia encerrado! @@@"
+            )
+            return None
+
+        contas_originais = cliente_origem.recuperar_contas()
+        
+        if not contas_originais:
+            print("\n@@@ O cliente de origem da transferencia não possui contas! @@@")
+            return None
+
+        escolhas_originais = 0
+        escolha_original = -1
+        for conta in contas_originais:
+            print(f"\nPara conta\n{conta}\nEscolha {escolhas_originais}")
+            escolhas_originais += 1
+
+        while (int(escolha_original) < 0) or (int(escolha_original) > len(contas_originais)):
+            escolha_original = input("\nEscolha a conta: ")
+      
+        
+        conta_origem = contas_originais[int(escolha_original)]
+  #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++      
+        print("\nEscolha o CPF ou CNPJ da conta de destino.\n")
+        
+        cliente_destino = self.__escolha_CPF_CNPJ()
+        
+        if not cliente_destino:
+            print(
+                "\n@@@ Cliente não encontrado, fluxo de transferencia encerrado! @@@"
+            )
+            return None
+
+        contas_destinos = cliente_destino.recuperar_contas()
+        
+        if not contas_destinos:
+            print("\n@@@ O cliente de destino da transferencia não possui contas! @@@")
+            return None
+
+        escolhas_destinos = 0
+        escolha_destino = -1
+        for conta in contas_destinos:
+            print(f"\nPara conta\n{conta}\nEscolha {escolhas_destinos}")
+            escolhas_destinos += 1
+
+        while (int(escolha_destino) < 0) or (int(escolha_destino) > len(contas_destinos)):
+            escolha_destino = input("\nEscolha a conta: ")
+        
+        conta_destino = contas_destinos[int(escolha_destino)]
+
+        
+        valor = float(input("\nInforme o valor de transferencia: "))
+        transacao = Transferencia(valor,conta_destino)
+        cliente_origem.realizar_transacao(conta_origem, transacao)
+    
+        print("\n=== Transferencia finalizada com sucesso! ===")
+
     
     def __sacar(self):
         
@@ -324,7 +390,7 @@ class Main:
 
         if not cliente:
             print(
-                "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
+                "\n@@@ Cliente não encontrado, fluxo de saque  encerrado! @@@"
             )
             return None
 
@@ -350,13 +416,16 @@ class Main:
         transacao = Saque(valor)
         cliente.realizar_transacao(conta, transacao)
 
+        print("\n=== Saque finalizado com sucesso! ===")
+
+        
     def __depositar(self):
         
         cliente = self.__escolha_CPF_CNPJ()
 
         if not cliente:
             print(
-                "\n@@@ Cliente não encontrado, fluxo de criação de conta encerrado! @@@"
+                "\n@@@ Cliente não encontrado, fluxo de deposito encerrado! @@@"
             )
             return None
 
@@ -382,6 +451,8 @@ class Main:
         transacao = Deposito(valor)
         cliente.realizar_transacao(conta, transacao)
 
+        print("\n=== Deposito finalizado com sucesso! ===")
+
         
     def __criar_conta_poupanca(self,numero):
     
@@ -398,7 +469,7 @@ class Main:
         self.__contas.append(conta)
         cliente.adicionar(conta)
        
-        print("\n=== Conta poupança criada cm sucesso! ===")
+        print("\n=== Conta poupança criada com sucesso! ===")
         
     def __criar_conta_corrente(self,numero):
     
@@ -414,7 +485,7 @@ class Main:
         self.__contas.append(conta)
         cliente.adicionar(conta)
        
-        print("\n=== Conta corrente criada cm sucesso! ===")
+        print("\n=== Conta corrente criada com sucesso! ===")
 
     def __criar_cliente(self):
         menu_criar_cliente = """Escolha o cliente a seguir: \n[f]\tCliente Fisico\n[j]\tCliente Juridico\n=> """
@@ -480,10 +551,15 @@ class Main:
         while True:
             opcao = input(textwrap.dedent(menu))
             
-            if opcao == "s":
+            if opcao == "t":
+                self.__transferir()
+                
+            elif opcao == "s":
                 self.__sacar()
+                
             elif opcao == "d":
                 self.__depositar()
+                
             elif opcao == "cp":
                 numero_conta = len(self.__contas) + 1
                 self.__criar_conta_poupanca(numero_conta)
