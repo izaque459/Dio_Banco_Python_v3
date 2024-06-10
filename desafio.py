@@ -302,6 +302,7 @@ class Main:
         ]
         return clientes_filtrados[0] if clientes_filtrados else None
         
+    
     def __escolha_CPF_CNPJ(self):
         menu_escolha_CPF_CNPJ = """Para o CPF escolha 1 para CNPJ escolha 2: """
         opcao_escolha = input(textwrap.dedent(menu_escolha_CPF_CNPJ))
@@ -320,6 +321,36 @@ class Main:
         return cliente
         
     
+    def __exibir_extrato(self):
+        
+        cliente = self.__escolha_CPF_CNPJ()
+        
+        if not cliente:
+            print(
+                "\n@@@ Cliente não encontrado, fluxo de transferencia encerrado! @@@"
+            )
+            
+        contas = cliente.recuperar_contas()
+
+        if not contas:
+            print("\n@@@ O cliente não possui contas! @@@")
+            return None
+
+        escolhas = 0
+        escolha = -1
+        for conta in contas:
+            print(f"\nPara conta\n{conta}\nEscolha {escolhas}")
+            escolhas += 1
+
+        while (int(escolha) < 0) or (int(escolha) > len(contas)):
+            escolha = input("\nEscolha a conta: ")
+      
+        
+        conta = contas[int(escolha)]
+        
+        print(conta.historico.transacoes)
+
+
     def __transferir(self):
         
         print("\nEscolha o CPF ou CNPJ da conta de origem.\n")
@@ -551,7 +582,10 @@ class Main:
         while True:
             opcao = input(textwrap.dedent(menu))
             
-            if opcao == "t":
+            if opcao == "e":
+                self.__exibir_extrato()
+                
+            elif opcao == "t":
                 self.__transferir()
                 
             elif opcao == "s":
