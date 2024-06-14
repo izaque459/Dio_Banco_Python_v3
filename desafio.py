@@ -338,7 +338,7 @@ class Main:
                 print(f"{i} - Agencia: {conta.agencia} Nome: {conta.cliente.nome} Conta número: {conta.numero} ")
                 
             indice = int(input())
-            while indice not in (1,numero_contas):
+            while indice not in range(1,numero_contas):
                 print("Digite a escolha correta: ")
                 indice = int(input())
             
